@@ -3,7 +3,7 @@ import SwiftUI
 /// A horizontal usage bar that fills proportionally
 struct UsageBar: View {
     let fraction: Double
-    var color: Color? = nil
+    var color: Color?
     var height: CGFloat = DesignTokens.Dimensions.barHeight
 
     private var fillColor: Color {

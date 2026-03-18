@@ -76,7 +76,6 @@ struct ProcessListView: View {
 
 struct ProcessRow: View {
     let process: ProcessStat
-    @State private var isHovered = false
 
     var body: some View {
         HStack(spacing: 0) {
@@ -110,14 +109,7 @@ struct ProcessRow: View {
         }
         .padding(.horizontal, DesignTokens.Spacing.sm)
         .padding(.vertical, DesignTokens.Spacing.xxs + 1)
-        .background(
-            RoundedRectangle(cornerRadius: 4)
-                .fill(isHovered ? Color.white.opacity(0.04) : Color.clear)
-        )
-        .onHover { hovering in
-            isHovered = hovering
-        }
-        .animation(DesignTokens.Animation.hover, value: isHovered)
+        .hoverHighlight()
     }
 
     private var cpuText: String {

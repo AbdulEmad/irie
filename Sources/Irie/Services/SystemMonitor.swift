@@ -34,7 +34,7 @@ final class SystemMonitor {
             }
         }
         // Also refresh immediately after a short delay for first data
-        Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { [weak self] _ in
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
             Task { @MainActor in
                 self?.refresh()
             }

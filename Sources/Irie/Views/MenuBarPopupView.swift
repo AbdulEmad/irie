@@ -1,6 +1,6 @@
 import SwiftUI
 
-enum VitalsTab: String, CaseIterable {
+enum IrieTab: String, CaseIterable {
     case stats = "Stats"
     case tasks = "Tasks"
 
@@ -14,7 +14,8 @@ enum VitalsTab: String, CaseIterable {
 
 struct MenuBarPopupView: View {
     let systemMonitor: SystemMonitor
-    @State private var selectedTab: VitalsTab = .stats
+    @State private var selectedTab: IrieTab = .stats
+    @State private var expandedCategory: StatCategory? = nil
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -53,8 +54,11 @@ struct MenuBarPopupView: View {
         .clipShape(RoundedRectangle(cornerRadius: DesignTokens.Dimensions.cornerRadius))
         .environment(\.colorScheme, .dark)
         .onExitCommand {
-            // Close the MenuBarExtra panel on Escape
-            if let window = NSApplication.shared.keyWindow {
+            if expandedCategory != nil {
+                withAnimation(DesignTokens.Animation.quick) {
+                    expandedCategory = nil
+                }
+            } else if let window = NSApplication.shared.keyWindow {
                 window.close()
             }
         }
@@ -64,7 +68,7 @@ struct MenuBarPopupView: View {
 
     private var tabBar: some View {
         HStack(spacing: 2) {
-            ForEach(VitalsTab.allCases, id: \.self) { tab in
+            ForEach(IrieTab.allCases, id: \.self) { tab in
                 Button {
                     withAnimation(DesignTokens.Animation.quick) {
                         selectedTab = tab
@@ -105,23 +109,7 @@ struct MenuBarPopupView: View {
     // MARK: - Stats Tab
 
     private var statsContent: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: DesignTokens.Spacing.lg) {
-                CPUSectionView(usage: systemMonitor.cpu)
-                    .hoverableRow()
-
-                MemorySectionView(usage: systemMonitor.memory)
-                    .hoverableRow()
-
-                DiskSectionView(usage: systemMonitor.disk)
-                    .hoverableRow()
-
-                NetworkSectionView(usage: systemMonitor.network)
-                    .hoverableRow()
-            }
-            .padding(DesignTokens.Spacing.lg)
-        }
-        .frame(maxHeight: DesignTokens.Dimensions.maxScrollHeight)
+        StatsGridView(systemMonitor: systemMonitor, expandedCategory: $expandedCategory)
     }
 
     // MARK: - Tasks Tab

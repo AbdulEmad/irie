@@ -19,7 +19,7 @@ struct CPUSectionView: View {
 
             // Per-core mini bars
             if !usage.perCore.isEmpty {
-                let columns = min(usage.perCore.count, 4)
+                let columns = min(usage.perCore.count, DesignTokens.Dimensions.maxGridColumns)
                 let rows = (usage.perCore.count + columns - 1) / columns
 
                 VStack(spacing: DesignTokens.Spacing.xs) {
@@ -46,7 +46,7 @@ struct CPUSectionView: View {
                 .frame(width: 14, alignment: .trailing)
             UsageBar(fraction: value, height: DesignTokens.Dimensions.miniBarHeight)
             Text(FormatHelper.percent(value))
-                .font(.system(size: 9, weight: .medium, design: .monospaced))
+                .font(DesignTokens.Typography.captionSmall)
                 .foregroundStyle(DesignTokens.Colors.textSecondary)
                 .frame(width: 30, alignment: .trailing)
                 .contentTransition(.numericText())

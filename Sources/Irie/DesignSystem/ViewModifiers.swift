@@ -30,6 +30,55 @@ struct HoverableRowModifier: ViewModifier {
     }
 }
 
+// MARK: - Hover Highlight Modifier
+
+struct HoverHighlightModifier: ViewModifier {
+    let cornerRadius: CGFloat
+    @State private var isHovered = false
+
+    func body(content: Content) -> some View {
+        content
+            .background(
+                RoundedRectangle(cornerRadius: cornerRadius)
+                    .fill(isHovered ? Color.white.opacity(0.04) : Color.clear)
+            )
+            .onHover { hovering in
+                isHovered = hovering
+            }
+            .animation(DesignTokens.Animation.hover, value: isHovered)
+    }
+}
+
+// MARK: - Hoverable Card Modifier
+
+struct HoverableCardModifier: ViewModifier {
+    let cornerRadius: CGFloat
+    @State private var isHovered = false
+
+    func body(content: Content) -> some View {
+        content
+            .background(
+                RoundedRectangle(cornerRadius: cornerRadius)
+                    .fill(.ultraThinMaterial)
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: cornerRadius)
+                    .fill(isHovered ? Color.white.opacity(0.04) : Color.clear)
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: cornerRadius)
+                    .stroke(
+                        isHovered ? DesignTokens.Colors.glassBorderHover : DesignTokens.Colors.glassBorder,
+                        lineWidth: 0.5
+                    )
+            )
+            .onHover { hovering in
+                isHovered = hovering
+            }
+            .animation(DesignTokens.Animation.hover, value: isHovered)
+    }
+}
+
 // MARK: - Section Header Style Modifier
 
 struct SectionHeaderStyleModifier: ViewModifier {
@@ -99,6 +148,14 @@ struct VibrancyIconModifier: ViewModifier {
 extension View {
     func hoverableRow() -> some View {
         modifier(HoverableRowModifier())
+    }
+
+    func hoverHighlight(cornerRadius: CGFloat = DesignTokens.Dimensions.miniBarHeight) -> some View {
+        modifier(HoverHighlightModifier(cornerRadius: cornerRadius))
+    }
+
+    func hoverableCard(cornerRadius: CGFloat = DesignTokens.Dimensions.rowRadius) -> some View {
+        modifier(HoverableCardModifier(cornerRadius: cornerRadius))
     }
 
     func sectionHeaderStyle() -> some View {

@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Design System tokens for Vitals UI — adapted from FineTune
+/// Design System tokens for Irie UI — adapted from FineTune
 enum DesignTokens {
 
     // MARK: - Colors
@@ -57,7 +57,9 @@ enum DesignTokens {
 
         static let value = Font.system(size: 11, weight: .medium, design: .monospaced)
         static let caption = Font.system(size: 10, weight: .regular)
+        static let captionSmall = Font.system(size: 9, weight: .medium, design: .monospaced)
 
+        static let headline = Font.system(size: 20, weight: .semibold, design: .monospaced)
         static let title = Font.system(size: 14, weight: .bold)
     }
 
@@ -90,6 +92,7 @@ enum DesignTokens {
         static let iconSize: CGFloat = 22
         static let iconSizeSmall: CGFloat = 14
         static let minTouchTarget: CGFloat = 16
+        static let maxGridColumns: Int = 4
     }
 
     // MARK: - Animation
