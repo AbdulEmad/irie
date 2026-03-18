@@ -1,6 +1,6 @@
-# Vitals
+# Irie
 
-A lightweight macOS menu bar app that displays live system stats in a dark glassmorphism popover.
+A lightweight macOS menu bar app that displays live system stats in a dark glassmorphism popover. Everything running smooth.
 
 ## Features
 
@@ -12,27 +12,25 @@ A lightweight macOS menu bar app that displays live system stats in a dark glass
 
 Stats auto-refresh every 2 seconds. No dock icon — lives entirely in the menu bar.
 
-## Requirements
-
-- macOS 14.0+ (Sonoma)
-- Swift 5.9+
-
-## Build & Run
+## Install
 
 ```bash
-# Clone and build
-cd vitals
-swift build
+brew install --cask AbdulEmad/tap/irie
+```
 
-# Run
+Or build from source:
+
+```bash
+git clone https://github.com/AbdulEmad/irie.git
+cd irie
+swift build
 swift run
 ```
 
-Or open in Xcode:
-
-```bash
-open Package.swift
-```
+> **Note:** If macOS blocks the app with "can't verify the developer", run:
+> ```bash
+> xattr -cr /Applications/Irie.app
+> ```
 
 ## Keyboard Shortcuts
 
@@ -41,8 +39,8 @@ open Package.swift
 ## Architecture
 
 ```
-Sources/Vitals/
-├── VitalsApp.swift              # MenuBarExtra entry point
+Sources/Irie/
+├── IrieApp.swift                # MenuBarExtra entry point
 ├── Models/
 │   ├── SystemStats.swift        # CPU, memory, disk, network data models
 │   └── ProcessStats.swift       # Process data model

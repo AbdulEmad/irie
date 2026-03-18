@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-APP_NAME="Vitals"
+APP_NAME="Irie"
 VERSION="${1:-1.0.0}"
 BUILD_DIR=".build/release"
 APP_BUNDLE="$BUILD_DIR/$APP_NAME.app"
@@ -23,15 +23,15 @@ cat > "$APP_BUNDLE/Contents/Info.plist" << PLIST
 <plist version="1.0">
 <dict>
     <key>CFBundleName</key>
-    <string>Vitals</string>
+    <string>Irie</string>
     <key>CFBundleIdentifier</key>
-    <string>com.abdulemad.vitals</string>
+    <string>com.abdulemad.irie</string>
     <key>CFBundleVersion</key>
     <string>$VERSION</string>
     <key>CFBundleShortVersionString</key>
     <string>$VERSION</string>
     <key>CFBundleExecutable</key>
-    <string>Vitals</string>
+    <string>Irie</string>
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>LSUIElement</key>

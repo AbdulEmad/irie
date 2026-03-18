@@ -2,14 +2,14 @@
 import PackageDescription
 
 let package = Package(
-    name: "Vitals",
+    name: "Irie",
     platforms: [
         .macOS(.v14)
     ],
     targets: [
         .executableTarget(
-            name: "Vitals",
-            path: "Sources/Vitals"
+            name: "Irie",
+            path: "Sources/Irie"
         )
     ]
 )

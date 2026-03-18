@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-struct VitalsApp: App {
+struct IrieApp: App {
     @State private var systemMonitor = SystemMonitor()
 
     init() {
