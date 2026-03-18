@@ -14,11 +14,30 @@ Stats auto-refresh every 2 seconds. No dock icon — lives entirely in the menu 
 
 ## Install
 
+### Homebrew (recommended)
+
 ```bash
-brew install --cask AbdulEmad/tap/irie
+brew tap AbdulEmad/tap
+brew install --cask irie
 ```
 
-Or build from source:
+On first launch, macOS may block the app since it isn't code-signed. Run this once to allow it:
+
+```bash
+xattr -cr /Applications/Irie.app
+```
+
+Then open Irie from `/Applications` or Spotlight.
+
+### Update
+
+```bash
+brew upgrade --cask irie
+```
+
+### Build from source
+
+Requires macOS 14+ and Swift 5.9+.
 
 ```bash
 git clone https://github.com/AbdulEmad/irie.git
@@ -27,10 +46,12 @@ swift build
 swift run
 ```
 
-> **Note:** If macOS blocks the app with "can't verify the developer", run:
-> ```bash
-> xattr -cr /Applications/Irie.app
-> ```
+To build a release `.app` bundle:
+
+```bash
+./scripts/build-app.sh
+open .build/release/Irie.app
+```
 
 ## Keyboard Shortcuts
 
