@@ -59,6 +59,7 @@ final class ProcessMonitor {
             results.append(ProcessStat(
                 id: pid,
                 name: name,
+                path: fullPath,
                 cpuUsage: cpuUsage,
                 memoryBytes: memoryBytes,
                 threadCount: taskInfo.pti_threadnum

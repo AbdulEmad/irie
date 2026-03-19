@@ -1,31 +1,38 @@
 import SwiftUI
+import AppKit
 
 struct ProcessListView: View {
     let processes: [ProcessStat]
     @State private var sortOrder: SortField = .cpu
+    @State private var ascending: Bool = false
 
     enum SortField {
         case name, cpu, memory, threads
     }
 
     private var sortedProcesses: [ProcessStat] {
+        let sorted: [ProcessStat]
         switch sortOrder {
         case .name:
-            return processes.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
+            sorted = processes.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
         case .cpu:
-            return processes.sorted { $0.cpuUsage > $1.cpuUsage }
+            sorted = processes.sorted { $0.cpuUsage > $1.cpuUsage }
         case .memory:
-            return processes.sorted { $0.memoryBytes > $1.memoryBytes }
+            sorted = processes.sorted { $0.memoryBytes > $1.memoryBytes }
         case .threads:
-            return processes.sorted { $0.threadCount > $1.threadCount }
+            sorted = processes.sorted { $0.threadCount > $1.threadCount }
         }
+        return ascending ? sorted.reversed() : sorted
     }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            // Column headers
+            // Column headers — matches row layout exactly
             HStack(spacing: 0) {
-                columnHeader("Process", field: .name, width: 180, alignment: .leading)
+                Text("")
+                    .frame(width: 22)
+
+                columnHeader("Process", field: .name, width: 158, alignment: .leading)
                 columnHeader("CPU", field: .cpu, width: 70, alignment: .trailing)
                 columnHeader("Memory", field: .memory, width: 90, alignment: .trailing)
                 columnHeader("Threads", field: .threads, width: 60, alignment: .trailing)
@@ -39,8 +46,8 @@ struct ProcessListView: View {
             // Process rows
             ScrollView {
                 LazyVStack(spacing: 0) {
-                    ForEach(sortedProcesses) { proc in
-                        ProcessRow(process: proc)
+                    ForEach(Array(sortedProcesses.enumerated()), id: \.element.id) { index, proc in
+                        ProcessRow(process: proc, isAlternate: index.isMultiple(of: 2))
                     }
                 }
             }
@@ -50,7 +57,12 @@ struct ProcessListView: View {
     private func columnHeader(_ title: String, field: SortField, width: CGFloat, alignment: Alignment) -> some View {
         Button {
             withAnimation(DesignTokens.Animation.quick) {
-                sortOrder = field
+                if sortOrder == field {
+                    ascending.toggle()
+                } else {
+                    sortOrder = field
+                    ascending = false
+                }
             }
         } label: {
             HStack(spacing: 2) {
@@ -58,6 +70,7 @@ struct ProcessListView: View {
                 if sortOrder == field {
                     Image(systemName: "chevron.down")
                         .font(.system(size: 7, weight: .bold))
+                        .rotationEffect(.degrees(ascending ? 180 : 0))
                 }
             }
             .frame(width: width, alignment: alignment)
@@ -76,16 +89,21 @@ struct ProcessListView: View {
 
 struct ProcessRow: View {
     let process: ProcessStat
+    let isAlternate: Bool
 
     var body: some View {
         HStack(spacing: 0) {
+            // App icon
+            ProcessIconView(path: process.path)
+                .frame(width: 22)
+
             // Name
             Text(process.name)
                 .font(DesignTokens.Typography.caption)
                 .foregroundStyle(DesignTokens.Colors.textPrimary)
                 .lineLimit(1)
                 .truncationMode(.middle)
-                .frame(width: 180, alignment: .leading)
+                .frame(width: 158, alignment: .leading)
 
             // CPU %
             Text(cpuText)
@@ -109,6 +127,7 @@ struct ProcessRow: View {
         }
         .padding(.horizontal, DesignTokens.Spacing.sm)
         .padding(.vertical, DesignTokens.Spacing.xxs + 1)
+        .background(isAlternate ? Color.white.opacity(0.02) : Color.clear)
         .hoverHighlight()
     }
 
@@ -127,5 +146,33 @@ struct ProcessRow: View {
         } else {
             return DesignTokens.Colors.textSecondary
         }
+    }
+}
+
+// MARK: - Process Icon
+
+struct ProcessIconView: View {
+    let path: String
+
+    var body: some View {
+        Image(nsImage: appIcon)
+            .resizable()
+            .aspectRatio(contentMode: .fit)
+            .frame(width: 14, height: 14)
+    }
+
+    private var appIcon: NSImage {
+        // Try to find the .app bundle by walking up from the executable path
+        var url = URL(fileURLWithPath: path)
+        for _ in 0..<5 {
+            url = url.deletingLastPathComponent()
+            if url.pathExtension == "app" {
+                let icon = NSWorkspace.shared.icon(forFile: url.path)
+                icon.size = NSSize(width: 14, height: 14)
+                return icon
+            }
+        }
+        // Fallback: generic executable icon
+        return NSWorkspace.shared.icon(forFile: path)
     }
 }
