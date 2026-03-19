@@ -2,6 +2,8 @@
 
 A lightweight macOS menu bar app that displays live system stats in a dark glassmorphism popover. Everything running smooth.
 
+<img width="484" height="293" alt="image" src="https://github.com/user-attachments/assets/ccd04be5-5d20-48a7-9fe9-25b9fbb7720c" />
+
 ## Features
 
 - **CPU** — Overall usage bar + per-core breakdown
