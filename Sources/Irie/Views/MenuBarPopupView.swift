@@ -16,8 +16,37 @@ struct MenuBarPopupView: View {
     let systemMonitor: SystemMonitor
     @State private var selectedTab: IrieTab = .stats
     @State private var expandedCategory: StatCategory? = nil
+    @State private var showSettings = false
 
     var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            if showSettings {
+                SettingsView(dismiss: { showSettings = false })
+            } else {
+                mainContent
+            }
+        }
+        .darkGlassBackground()
+        .clipShape(RoundedRectangle(cornerRadius: DesignTokens.Dimensions.cornerRadius))
+        .environment(\.colorScheme, .dark)
+        .onExitCommand {
+            if showSettings {
+                withAnimation(DesignTokens.Animation.quick) {
+                    showSettings = false
+                }
+            } else if expandedCategory != nil {
+                withAnimation(DesignTokens.Animation.quick) {
+                    expandedCategory = nil
+                }
+            } else if let window = NSApplication.shared.keyWindow {
+                window.close()
+            }
+        }
+    }
+
+    // MARK: - Main Content
+
+    private var mainContent: some View {
         VStack(alignment: .leading, spacing: 0) {
             // Header
             HStack {
@@ -26,10 +55,12 @@ struct MenuBarPopupView: View {
                 Spacer()
 
                 Button {
-                    NSApplication.shared.terminate(nil)
+                    withAnimation(DesignTokens.Animation.quick) {
+                        showSettings = true
+                    }
                 } label: {
-                    Text("Quit")
-                        .font(DesignTokens.Typography.caption)
+                    Image(systemName: "gearshape")
+                        .font(.system(size: 10))
                         .foregroundStyle(DesignTokens.Colors.textSecondary)
                 }
                 .buttonStyle(.plain)
@@ -49,18 +80,23 @@ struct MenuBarPopupView: View {
             case .tasks:
                 tasksContent
             }
-        }
-        .darkGlassBackground()
-        .clipShape(RoundedRectangle(cornerRadius: DesignTokens.Dimensions.cornerRadius))
-        .environment(\.colorScheme, .dark)
-        .onExitCommand {
-            if expandedCategory != nil {
-                withAnimation(DesignTokens.Animation.quick) {
-                    expandedCategory = nil
+
+            // Footer
+            HStack {
+                Spacer()
+
+                Button {
+                    NSApplication.shared.terminate(nil)
+                } label: {
+                    Text("Quit")
+                        .font(DesignTokens.Typography.caption)
+                        .foregroundStyle(DesignTokens.Colors.textSecondary)
                 }
-            } else if let window = NSApplication.shared.keyWindow {
-                window.close()
+                .buttonStyle(.plain)
+                .glassButtonStyle()
             }
+            .padding(.horizontal, DesignTokens.Spacing.lg)
+            .padding(.vertical, DesignTokens.Spacing.sm)
         }
     }
 
